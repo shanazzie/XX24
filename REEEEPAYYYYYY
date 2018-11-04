@@ -64,6 +64,54 @@ data_co1<-data_co1[month==12&year==2017,Month:=24]
 colnames(data_co1)<-c("month", "Year", "Repayment", "Month")
 ggplot(data=data_co1) + geom_point(mapping = aes(x=factor(Month), y=Repayment)) + geom_line(mapping = aes(x=factor(Month), y=Repayment), group=1) +ggtitle("Tamarillo Innovation Pte Ltd Repayment Pattern") +scale_x_discrete(labels=data_co1$Month)
 
+#number of I and B for tamarillo
+
+tamaN<- dataI[`Customer Name`=="Tamarillo Innovation Pte Ltd",.N,by=list(month(DocDate),year(DocDate))]
+c2<- dataB[`Customer Name`=="Tamarillo Innovation Pte Ltd",.N,by=list(month(DocDate),year(DocDate))]
+tamaN<-merge(tamaN,c2, by=c("month","year"), all=T)
+col.names3<- c("Number of Invoices","Number of Repayments")
+colnames(tamaN)[3:4]<- col.names3
+
+tamaN<-tamaN[month==1&year==2016,Month:=1]
+tamaN<-tamaN[month==2&year==2016,Month:=2]
+tamaN<-tamaN[month==3&year==2016,Month:=3]
+tamaN<-tamaN[month==4&year==2016,Month:=4]
+tamaN<-tamaN[month==5&year==2016,Month:=5]
+tamaN<-tamaN[month==6&year==2016,Month:=6]
+tamaN<-tamaN[month==7&year==2016,Month:=7]
+tamaN<-tamaN[month==8&year==2016,Month:=8]
+tamaN<-tamaN[month==9&year==2016,Month:=9]
+tamaN<-tamaN[month==10&year==2016,Month:=10]
+tamaN<-tamaN[month==11&year==2016,Month:=11]
+tamaN<-tamaN[month==12&year==2016,Month:=12]
+
+tamaN<-tamaN[month==1&year==2017,Month:=13]
+tamaN<-tamaN[month==2&year==2017,Month:=14]
+tamaN<-tamaN[month==3&year==2017,Month:=15]
+tamaN<-tamaN[month==4&year==2017,Month:=16]
+tamaN<-tamaN[month==5&year==2017,Month:=17]
+tamaN<-tamaN[month==6&year==2017,Month:=18]
+tamaN<-tamaN[month==7&year==2017,Month:=19]
+tamaN<-tamaN[month==8&year==2017,Month:=20]
+tamaN<-tamaN[month==9&year==2017,Month:=21]
+tamaN<-tamaN[month==10&year==2017,Month:=22]
+tamaN<-tamaN[month==11&year==2017,Month:=23]
+tamaN<-tamaN[month==12&year==2017,Month:=24]
+
+tamaN <- tamaN[order(Month,decreasing=FALSE)]
+tamaN <- tamaN[,year:=NULL]
+tamaN <- tamaN[,month:=NULL]
+
+
+#plot bar graph
+tamaN2 <- melt(tamaN, id.vars='Month')
+r3<- ggplot(tamaN2, aes(x=Month, y=value, fill=variable)) +
+  geom_bar(stat='identity', position='dodge') + 
+  scale_x_continuous(limits = c(0, 24), breaks = 1:24) + 
+  ylab('Count') +
+  ggtitle("Tamarillo Innovation Pte Ltd")
+print(r3)
+
 #TAMARILLO INNOVATION
 data_tamarillo_B<-dataB[`Customer Name`=="Tamarillo Innovation Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
 
@@ -253,3 +301,14 @@ data201.3.sum<-data201.3.sum[month==9&year==2017,Month:=21]
 data201.3.sum<-data201.3.sum[month==10&year==2017,Month:=22]
 data201.3.sum<-data201.3.sum[month==11&year==2017,Month:=23]
 data201.3.sum<-data201.3.sum[month==12&year==2017,Month:=24]
+
+#plot graph
+q.2 = ggplot() + 
+  geom_line(data = data201.3.sum, aes(x = Month, y = `Cash Inflow`, colour="blue"), size=1) +
+  geom_line(data = data201.inflow.1, aes(x = Month, y = `Cash Inflow`, colour="red"), size=1) +
+  geom_point(data = data201.3.sum, aes(x = Month, y = `Cash Inflow`, colour="blue")) +
+  geom_point(data = data201.inflow.1, aes(x = Month, y = `Cash Inflow`, colour="red")) +
+  xlab('Month') +
+  ylab('Cash Inflow') +
+  scale_color_discrete(labels = c("Top 20 Companies", "All the Companies")) +
+  ggtitle("Cash Collected by Months for 2016 and 2017")
