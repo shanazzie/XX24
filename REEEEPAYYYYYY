@@ -2,6 +2,7 @@ setwd('/Users/yangxin/Desktop/BC3407 R&Python/Project')
 library(data.table)
 library(tidyverse)
 library(ggplot2)
+library(reshape2)
 data0<-fread('trading_clean.csv')
 
 #remove transactions with 0 value
