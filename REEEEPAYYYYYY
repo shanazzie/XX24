@@ -215,3 +215,41 @@ data201IB2$`Repayment Amount`<-format(round(data201IB2$`Repayment Amount`, 2), n
 
 #subset top 20 companies
 data201IBTOP20<-data201IB2[order(data201IB2$`Purchase Amount`,decreasing=T)[1:20],]
+dataTOP20 <- data1[`Customer Name` == data201IBTOP20$`Customer Name`[1]]
+
+for (i in as.character(data201IBTOP20[,`Customer Name`])) {
+  dt2 <- data201[`Customer Name` == i]
+  dataTOP20 <- merge(dataTOP20, dt2, all=TRUE)
+}
+
+#Split data into B's 
+dataBTOP20<-dataTOP20[grep("BR|BD|BW", DocRef)]
+
+data201.3.sum<-dataBTOP20[, sum(HomeWTaxAmt), by=list(year(DocDate),month(DocDate))]
+colnames(data201.3.sum)[3] <- "Cash Inflow"
+
+data201.3.sum<-data201.3.sum[month==1&year==2016,Month:=1]
+data201.3.sum<-data201.3.sum[month==2&year==2016,Month:=2]
+data201.3.sum<-data201.3.sum[month==3&year==2016,Month:=3]
+data201.3.sum<-data201.3.sum[month==4&year==2016,Month:=4]
+data201.3.sum<-data201.3.sum[month==5&year==2016,Month:=5]
+data201.3.sum<-data201.3.sum[month==6&year==2016,Month:=6]
+data201.3.sum<-data201.3.sum[month==7&year==2016,Month:=7]
+data201.3.sum<-data201.3.sum[month==8&year==2016,Month:=8]
+data201.3.sum<-data201.3.sum[month==9&year==2016,Month:=9]
+data201.3.sum<-data201.3.sum[month==10&year==2016,Month:=10]
+data201.3.sum<-data201.3.sum[month==11&year==2016,Month:=11]
+data201.3.sum<-data201.3.sum[month==12&year==2016,Month:=12]
+
+data201.3.sum<-data201.3.sum[month==1&year==2017,Month:=13]
+data201.3.sum<-data201.3.sum[month==2&year==2017,Month:=14]
+data201.3.sum<-data201.3.sum[month==3&year==2017,Month:=15]
+data201.3.sum<-data201.3.sum[month==4&year==2017,Month:=16]
+data201.3.sum<-data201.3.sum[month==5&year==2017,Month:=17]
+data201.3.sum<-data201.3.sum[month==6&year==2017,Month:=18]
+data201.3.sum<-data201.3.sum[month==7&year==2017,Month:=19]
+data201.3.sum<-data201.3.sum[month==8&year==2017,Month:=20]
+data201.3.sum<-data201.3.sum[month==9&year==2017,Month:=21]
+data201.3.sum<-data201.3.sum[month==10&year==2017,Month:=22]
+data201.3.sum<-data201.3.sum[month==11&year==2017,Month:=23]
+data201.3.sum<-data201.3.sum[month==12&year==2017,Month:=24]
