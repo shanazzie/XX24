@@ -1,1 +1,322 @@
+setwd('/Users/yangxin/Desktop/BC3407 R&Python/Project')
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+data0<-fread('trading_clean.csv')
 
+#remove transactions with 0 value
+data1<-data0[!AcCurWTaxAmt==0 & !HomeWTaxAmt==0]
+
+#convert DocDate format to date format
+data1$DocDate <- as.Date(as.character(data1$DocDate),format="%Y%m%d")
+
+#by month
+data1[, Month:= format(as.Date(DocDate, "%Y%m%d"), "%B")]
+
+#Split data into B's and I's
+dataB<-data1[grep("BR|BD|BW", DocRef)]
+dataI<-data1[grep("I", DocRef)]
+
+#Remove transactions after 2017
+dataB<-dataB[DocDate<=as.Date("2017-12-31")]
+dataI<-dataI[DocDate<=as.Date("2017-12-31")]
+
+#Top Customers in Repayment for 2016 & 2017
+dataB[,sum(HomeWTaxAmt), by=`Customer Name`][order(-V1)]
+# Customer Name          V1
+# 1:            Tamarillo Innovation Pte Ltd 94441312.20
+# 2:                   Cherry Master Pte Ltd 14172218.33
+# 3:         Clementine Distribution Pte Ltd  9981530.07
+# 4:                       Fig Relay Pte Ltd  9523435.77
+# 5:                 Plantain Dealer Pte Ltd  5880434.40
+
+#Repayment Graphs for Top 5 Customers (2016 & 2017)
+#INDIVIDUAL COMPANIES
+options(scipen=100)
+
+data_co1<-dataB[`Customer Name`=="Tamarillo Innovation Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_co1<-data_co1[month==1&year==2016,Month:=1]
+data_co1<-data_co1[month==2&year==2016,Month:=2]
+data_co1<-data_co1[month==3&year==2016,Month:=3]
+data_co1<-data_co1[month==4&year==2016,Month:=4]
+data_co1<-data_co1[month==5&year==2016,Month:=5]
+data_co1<-data_co1[month==6&year==2016,Month:=6]
+data_co1<-data_co1[month==7&year==2016,Month:=7]
+data_co1<-data_co1[month==8&year==2016,Month:=8]
+data_co1<-data_co1[month==9&year==2016,Month:=9]
+data_co1<-data_co1[month==10&year==2016,Month:=10]
+data_co1<-data_co1[month==11&year==2016,Month:=11]
+data_co1<-data_co1[month==12&year==2016,Month:=12]
+
+data_co1<-data_co1[month==1&year==2017,Month:=13]
+data_co1<-data_co1[month==2&year==2017,Month:=14]
+data_co1<-data_co1[month==3&year==2017,Month:=15]
+data_co1<-data_co1[month==4&year==2017,Month:=16]
+data_co1<-data_co1[month==5&year==2017,Month:=17]
+data_co1<-data_co1[month==6&year==2017,Month:=18]
+data_co1<-data_co1[month==7&year==2017,Month:=19]
+data_co1<-data_co1[month==8&year==2017,Month:=20]
+data_co1<-data_co1[month==9&year==2017,Month:=21]
+data_co1<-data_co1[month==10&year==2017,Month:=22]
+data_co1<-data_co1[month==11&year==2017,Month:=23]
+data_co1<-data_co1[month==12&year==2017,Month:=24]
+colnames(data_co1)<-c("month", "Year", "Repayment", "Month")
+ggplot(data=data_co1) + geom_point(mapping = aes(x=factor(Month), y=Repayment)) + geom_line(mapping = aes(x=factor(Month), y=Repayment), group=1) +ggtitle("Tamarillo Innovation Pte Ltd Repayment Pattern") +scale_x_discrete(labels=data_co1$Month)
+
+
+data_co2<-dataB[`Customer Name`=="Cherry Master Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_co2<-data_co2[month==1&year==2016,Month:=1]
+data_co2<-data_co2[month==2&year==2016,Month:=2]
+data_co2<-data_co2[month==3&year==2016,Month:=3]
+data_co2<-data_co2[month==4&year==2016,Month:=4]
+data_co2<-data_co2[month==5&year==2016,Month:=5]
+data_co2<-data_co2[month==6&year==2016,Month:=6]
+data_co2<-data_co2[month==7&year==2016,Month:=7]
+data_co2<-data_co2[month==8&year==2016,Month:=8]
+data_co2<-data_co2[month==9&year==2016,Month:=9]
+data_co2<-data_co2[month==10&year==2016,Month:=10]
+data_co2<-data_co2[month==11&year==2016,Month:=11]
+data_co2<-data_co2[month==12&year==2016,Month:=12]
+
+data_co2<-data_co2[month==1&year==2017,Month:=13]
+data_co2<-data_co2[month==2&year==2017,Month:=14]
+data_co2<-data_co2[month==3&year==2017,Month:=15]
+data_co2<-data_co2[month==4&year==2017,Month:=16]
+data_co2<-data_co2[month==5&year==2017,Month:=17]
+data_co2<-data_co2[month==6&year==2017,Month:=18]
+data_co2<-data_co2[month==7&year==2017,Month:=19]
+data_co2<-data_co2[month==8&year==2017,Month:=20]
+data_co2<-data_co2[month==9&year==2017,Month:=21]
+data_co2<-data_co2[month==10&year==2017,Month:=22]
+data_co2<-data_co2[month==11&year==2017,Month:=23]
+data_co2<-data_co2[month==12&year==2017,Month:=24]
+colnames(data_co2)<-c("month", "Year", "Repayment", "Month")
+ggplot(data=data_co2) + geom_point(mapping = aes(x=factor(Month), y=Repayment)) + geom_line(mapping = aes(x=factor(Month), y=Repayment), group=1) +ggtitle("Cherry Master Pte Ltd Repayment Pattern")+scale_x_discrete(labels=data_co2$Month)
+
+data_co3<-dataB[`Customer Name`=="Clementine Distribution Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_co3<-data_co3[month==1&year==2016,Month:=1]
+data_co3<-data_co3[month==2&year==2016,Month:=2]
+data_co3<-data_co3[month==3&year==2016,Month:=3]
+data_co3<-data_co3[month==4&year==2016,Month:=4]
+data_co3<-data_co3[month==5&year==2016,Month:=5]
+data_co3<-data_co3[month==6&year==2016,Month:=6]
+data_co3<-data_co3[month==7&year==2016,Month:=7]
+data_co3<-data_co3[month==8&year==2016,Month:=8]
+data_co3<-data_co3[month==9&year==2016,Month:=9]
+data_co3<-data_co3[month==10&year==2016,Month:=10]
+data_co3<-data_co3[month==11&year==2016,Month:=11]
+data_co3<-data_co3[month==12&year==2016,Month:=12]
+
+data_co3<-data_co3[month==1&year==2017,Month:=13]
+data_co3<-data_co3[month==2&year==2017,Month:=14]
+data_co3<-data_co3[month==3&year==2017,Month:=15]
+data_co3<-data_co3[month==4&year==2017,Month:=16]
+data_co3<-data_co3[month==5&year==2017,Month:=17]
+data_co3<-data_co3[month==6&year==2017,Month:=18]
+data_co3<-data_co3[month==7&year==2017,Month:=19]
+data_co3<-data_co3[month==8&year==2017,Month:=20]
+data_co3<-data_co3[month==9&year==2017,Month:=21]
+data_co3<-data_co3[month==10&year==2017,Month:=22]
+data_co3<-data_co3[month==11&year==2017,Month:=23]
+data_co3<-data_co3[month==12&year==2017,Month:=24]
+colnames(data_co3)<-c("month", "Year", "Repayment", "Month")
+ggplot(data=data_co3) + geom_point(mapping = aes(x=Month, y=Repayment)) + geom_line(mapping = aes(x=Month, y=Repayment), group=1) +ggtitle("Clementine Distribution Pte Ltd Repayment Pattern") + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+data_co4<-dataB[`Customer Name`=="Fig Relay Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_co4<-data_co4[month==1&year==2016,Month:=1]
+data_co4<-data_co4[month==2&year==2016,Month:=2]
+data_co4<-data_co4[month==3&year==2016,Month:=3]
+data_co4<-data_co4[month==4&year==2016,Month:=4]
+data_co4<-data_co4[month==5&year==2016,Month:=5]
+data_co4<-data_co4[month==6&year==2016,Month:=6]
+data_co4<-data_co4[month==7&year==2016,Month:=7]
+data_co4<-data_co4[month==8&year==2016,Month:=8]
+data_co4<-data_co4[month==9&year==2016,Month:=9]
+data_co4<-data_co4[month==10&year==2016,Month:=10]
+data_co4<-data_co4[month==11&year==2016,Month:=11]
+data_co4<-data_co4[month==12&year==2016,Month:=12]
+
+data_co4<-data_co4[month==1&year==2017,Month:=13]
+data_co4<-data_co4[month==2&year==2017,Month:=14]
+data_co4<-data_co4[month==3&year==2017,Month:=15]
+data_co4<-data_co4[month==4&year==2017,Month:=16]
+data_co4<-data_co4[month==5&year==2017,Month:=17]
+data_co4<-data_co4[month==6&year==2017,Month:=18]
+data_co4<-data_co4[month==7&year==2017,Month:=19]
+data_co4<-data_co4[month==8&year==2017,Month:=20]
+data_co4<-data_co4[month==9&year==2017,Month:=21]
+data_co4<-data_co4[month==10&year==2017,Month:=22]
+data_co4<-data_co4[month==11&year==2017,Month:=23]
+data_co4<-data_co4[month==12&year==2017,Month:=24]
+colnames(data_co4)<-c("month", "Year", "Repayment", "Month")
+ggplot(data=data_co4) + geom_point(mapping = aes(x=Month, y=Repayment)) + geom_line(mapping = aes(x=Month, y=Repayment), group=1) +ggtitle("Fig Relay Pte Ltd Repayment Pattern") + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+data_co5<-dataB[`Customer Name`=="Plantain Dealer Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_co5<-data_co5[month==1&year==2016,Month:=1]
+data_co5<-data_co5[month==2&year==2016,Month:=2]
+data_co5<-data_co5[month==3&year==2016,Month:=3]
+data_co5<-data_co5[month==4&year==2016,Month:=4]
+data_co5<-data_co5[month==5&year==2016,Month:=5]
+data_co5<-data_co5[month==6&year==2016,Month:=6]
+data_co5<-data_co5[month==7&year==2016,Month:=7]
+data_co5<-data_co5[month==8&year==2016,Month:=8]
+data_co5<-data_co5[month==9&year==2016,Month:=9]
+data_co5<-data_co5[month==10&year==2016,Month:=10]
+data_co5<-data_co5[month==11&year==2016,Month:=11]
+data_co5<-data_co5[month==12&year==2016,Month:=12]
+
+data_co5<-data_co5[month==1&year==2017,Month:=13]
+data_co5<-data_co5[month==2&year==2017,Month:=14]
+data_co5<-data_co5[month==3&year==2017,Month:=15]
+data_co5<-data_co5[month==4&year==2017,Month:=16]
+data_co5<-data_co5[month==5&year==2017,Month:=17]
+data_co5<-data_co5[month==6&year==2017,Month:=18]
+data_co5<-data_co5[month==7&year==2017,Month:=19]
+data_co5<-data_co5[month==8&year==2017,Month:=20]
+data_co5<-data_co5[month==9&year==2017,Month:=21]
+data_co5<-data_co5[month==10&year==2017,Month:=22]
+data_co5<-data_co5[month==11&year==2017,Month:=23]
+data_co5<-data_co5[month==12&year==2017,Month:=24]
+colnames(data_co5)<-c("month", "Year", "Repayment", "Month")
+ggplot(data=data_co5) + geom_point(mapping = aes(x=Month, y=Repayment)) + geom_line(mapping = aes(x=Month, y=Repayment), group=1) +ggtitle("Plantain Dealer Pte Ltd Repayment Pattern") +  scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+
+
+#FIG RELAY
+#Repayment for Fig Relay
+data_fig_relay_B<-dataB[`Customer Name`=="Fig Relay Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_fig_relay_B<-data_fig_relay_B[month==1&year==2016,Month:=1]
+data_fig_relay_B<-data_fig_relay_B[month==2&year==2016,Month:=2]
+data_fig_relay_B<-data_fig_relay_B[month==3&year==2016,Month:=3]
+data_fig_relay_B<-data_fig_relay_B[month==4&year==2016,Month:=4]
+data_fig_relay_B<-data_fig_relay_B[month==5&year==2016,Month:=5]
+data_fig_relay_B<-data_fig_relay_B[month==6&year==2016,Month:=6]
+data_fig_relay_B<-data_fig_relay_B[month==7&year==2016,Month:=7]
+data_fig_relay_B<-data_fig_relay_B[month==8&year==2016,Month:=8]
+data_fig_relay_B<-data_fig_relay_B[month==9&year==2016,Month:=9]
+data_fig_relay_B<-data_fig_relay_B[month==10&year==2016,Month:=10]
+data_fig_relay_B<-data_fig_relay_B[month==11&year==2016,Month:=11]
+data_fig_relay_B<-data_fig_relay_B[month==12&year==2016,Month:=12]
+
+data_fig_relay_B<-data_fig_relay_B[month==1&year==2017,Month:=13]
+data_fig_relay_B<-data_fig_relay_B[month==2&year==2017,Month:=14]
+data_fig_relay_B<-data_fig_relay_B[month==3&year==2017,Month:=15]
+data_fig_relay_B<-data_fig_relay_B[month==4&year==2017,Month:=16]
+data_fig_relay_B<-data_fig_relay_B[month==5&year==2017,Month:=17]
+data_fig_relay_B<-data_fig_relay_B[month==6&year==2017,Month:=18]
+data_fig_relay_B<-data_fig_relay_B[month==7&year==2017,Month:=19]
+data_fig_relay_B<-data_fig_relay_B[month==8&year==2017,Month:=20]
+data_fig_relay_B<-data_fig_relay_B[month==9&year==2017,Month:=21]
+data_fig_relay_B<-data_fig_relay_B[month==10&year==2017,Month:=22]
+data_fig_relay_B<-data_fig_relay_B[month==11&year==2017,Month:=23]
+data_fig_relay_B<-data_fig_relay_B[month==12&year==2017,Month:=24]
+
+colnames(data_fig_relay_B)<-c("month", "Year","Repayment", "Month")
+#dataB_new_1$Month<-factor(data_new_1$Month, levels=c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), ordered=T)
+ggplot(data=data_fig_relay_B) + geom_point(mapping = aes(x=Month, y=Repayment)) + geom_line(mapping = aes(x=Month, y=Repayment), group=1) +ggtitle("Repayment Pattern for 2016 & 2017 for Top 5 Companies") + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+
+#Invoice for Fig Relay
+data_fig_relay_I<-dataI[`Customer Name`=="Fig Relay Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_fig_relay_I<-data_fig_relay_I[month==1&year==2016,Month:=1]
+data_fig_relay_I<-data_fig_relay_I[month==2&year==2016,Month:=2]
+data_fig_relay_I<-data_fig_relay_I[month==3&year==2016,Month:=3]
+data_fig_relay_I<-data_fig_relay_I[month==4&year==2016,Month:=4]
+data_fig_relay_I<-data_fig_relay_I[month==5&year==2016,Month:=5]
+data_fig_relay_I<-data_fig_relay_I[month==6&year==2016,Month:=6]
+data_fig_relay_I<-data_fig_relay_I[month==7&year==2016,Month:=7]
+data_fig_relay_I<-data_fig_relay_I[month==8&year==2016,Month:=8]
+data_fig_relay_I<-data_fig_relay_I[month==9&year==2016,Month:=9]
+data_fig_relay_I<-data_fig_relay_I[month==10&year==2016,Month:=10]
+data_fig_relay_I<-data_fig_relay_I[month==11&year==2016,Month:=11]
+data_fig_relay_I<-data_fig_relay_I[month==12&year==2016,Month:=12]
+
+data_fig_relay_I<-data_fig_relay_I[month==1&year==2017,Month:=13]
+data_fig_relay_I<-data_fig_relay_I[month==2&year==2017,Month:=14]
+data_fig_relay_I<-data_fig_relay_I[month==3&year==2017,Month:=15]
+data_fig_relay_I<-data_fig_relay_I[month==4&year==2017,Month:=16]
+data_fig_relay_I<-data_fig_relay_I[month==5&year==2017,Month:=17]
+data_fig_relay_I<-data_fig_relay_I[month==6&year==2017,Month:=18]
+data_fig_relay_I<-data_fig_relay_I[month==7&year==2017,Month:=19]
+data_fig_relay_I<-data_fig_relay_I[month==8&year==2017,Month:=20]
+data_fig_relay_I<-data_fig_relay_I[month==9&year==2017,Month:=21]
+data_fig_relay_I<-data_fig_relay_I[month==10&year==2017,Month:=22]
+data_fig_relay_I<-data_fig_relay_I[month==11&year==2017,Month:=23]
+data_fig_relay_I<-data_fig_relay_I[month==12&year==2017,Month:=24]
+colnames(data_fig_relay_I)<-c("month", "Year", "Invoice", "Month")
+ggplot(data=data_fig_relay_I) + geom_point(mapping = aes(x=Month, y=Invoice)) + geom_line(mapping = aes(x=Month, y=Invoice), group=1) +ggtitle("Fig Relay Pte Ltd Repayment Pattern") + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+
+#Plotting combined graph for I and B
+d0 <- merge(data_fig_relay_B, data_fig_relay_I, by='Month')
+ggplot() + geom_point(data=data_fig_relay_B, aes(x=Month, y=Repayment)) + geom_line(data=data_fig_relay_B,aes(x=Month, y=Repayment), group=1, colour="red")  + scale_x_continuous(limits=c(0,24) ,breaks=1:24)+ geom_point(data=data_fig_relay_I, aes(x=Month, y=Invoice)) + geom_line(data=data_fig_relay_I,aes(x=Month, y=Invoice), group=1, colour="blue")  + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+
+#TAMARILLO INNOVATION
+data_tamarillo_B<-dataB[`Customer Name`=="Tamarillo Innovation Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+
+data_tamarillo_B<-data_tamarillo_B[month==1&year==2016,Month:=1]
+data_tamarillo_B<-data_tamarillo_B[month==2&year==2016,Month:=2]
+data_tamarillo_B<-data_tamarillo_B[month==3&year==2016,Month:=3]
+data_tamarillo_B<-data_tamarillo_B[month==4&year==2016,Month:=4]
+data_tamarillo_B<-data_tamarillo_B[month==5&year==2016,Month:=5]
+data_tamarillo_B<-data_tamarillo_B[month==6&year==2016,Month:=6]
+data_tamarillo_B<-data_tamarillo_B[month==7&year==2016,Month:=7]
+data_tamarillo_B<-data_tamarillo_B[month==8&year==2016,Month:=8]
+data_tamarillo_B<-data_tamarillo_B[month==9&year==2016,Month:=9]
+data_tamarillo_B<-data_tamarillo_B[month==10&year==2016,Month:=10]
+data_tamarillo_B<-data_tamarillo_B[month==11&year==2016,Month:=11]
+data_tamarillo_B<-data_tamarillo_B[month==12&year==2016,Month:=12]
+
+data_tamarillo_B<-data_tamarillo_B[month==1&year==2017,Month:=13]
+data_tamarillo_B<-data_tamarillo_B[month==2&year==2017,Month:=14]
+data_tamarillo_B<-data_tamarillo_B[month==3&year==2017,Month:=15]
+data_tamarillo_B<-data_tamarillo_B[month==4&year==2017,Month:=16]
+data_tamarillo_B<-data_tamarillo_B[month==5&year==2017,Month:=17]
+data_tamarillo_B<-data_tamarillo_B[month==6&year==2017,Month:=18]
+data_tamarillo_B<-data_tamarillo_B[month==7&year==2017,Month:=19]
+data_tamarillo_B<-data_tamarillo_B[month==8&year==2017,Month:=20]
+data_tamarillo_B<-data_tamarillo_B[month==9&year==2017,Month:=21]
+data_tamarillo_B<-data_tamarillo_B[month==10&year==2017,Month:=22]
+data_tamarillo_B<-data_tamarillo_B[month==11&year==2017,Month:=23]
+data_tamarillo_B<-data_tamarillo_B[month==12&year==2017,Month:=24]
+
+colnames(data_tamarillo_B)<-c("month", "Year","Repayment", "Month")
+#dataB_new_1$Month<-factor(data_new_1$Month, levels=c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), ordered=T)
+ggplot(data=data_tamarillo_B) + geom_point(mapping = aes(x=Month, y=Repayment)) + geom_line(mapping = aes(x=Month, y=Repayment), group=1) +ggtitle("Repayment Pattern for 2016 & 2017 for Top 5 Companies") + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+
+data_tamarillo_I<-dataI[`Customer Name`=="Tamarillo Innovation Pte Ltd", sum(HomeWTaxAmt), by=list(month(DocDate),year(DocDate))]
+data_tamarillo_I<-data_tamarillo_I[month==1&year==2016,Month:=1]
+data_tamarillo_I<-data_tamarillo_I[month==2&year==2016,Month:=2]
+data_tamarillo_I<-data_tamarillo_I[month==3&year==2016,Month:=3]
+data_tamarillo_I<-data_tamarillo_I[month==4&year==2016,Month:=4]
+data_tamarillo_I<-data_tamarillo_I[month==5&year==2016,Month:=5]
+data_tamarillo_I<-data_tamarillo_I[month==6&year==2016,Month:=6]
+data_tamarillo_I<-data_tamarillo_I[month==7&year==2016,Month:=7]
+data_tamarillo_I<-data_tamarillo_I[month==8&year==2016,Month:=8]
+data_tamarillo_I<-data_tamarillo_I[month==9&year==2016,Month:=9]
+data_tamarillo_I<-data_tamarillo_I[month==10&year==2016,Month:=10]
+data_tamarillo_I<-data_tamarillo_I[month==11&year==2016,Month:=11]
+data_tamarillo_I<-data_tamarillo_I[month==12&year==2016,Month:=12]
+
+data_tamarillo_I<-data_tamarillo_I[month==1&year==2017,Month:=13]
+data_tamarillo_I<-data_tamarillo_I[month==2&year==2017,Month:=14]
+data_tamarillo_I<-data_tamarillo_I[month==3&year==2017,Month:=15]
+data_tamarillo_I<-data_tamarillo_I[month==4&year==2017,Month:=16]
+data_tamarillo_I<-data_tamarillo_I[month==5&year==2017,Month:=17]
+data_tamarillo_I<-data_tamarillo_I[month==6&year==2017,Month:=18]
+data_tamarillo_I<-data_tamarillo_I[month==7&year==2017,Month:=19]
+data_tamarillo_I<-data_tamarillo_I[month==8&year==2017,Month:=20]
+data_tamarillo_I<-data_tamarillo_I[month==9&year==2017,Month:=21]
+data_tamarillo_I<-data_tamarillo_I[month==10&year==2017,Month:=22]
+data_tamarillo_I<-data_tamarillo_I[month==11&year==2017,Month:=23]
+data_tamarillo_I<-data_tamarillo_I[month==12&year==2017,Month:=24]
+
+colnames(data_tamarillo_I)<-c("month", "Year", "Invoice", "Month")
+ggplot(data=data_tamarillo_I) + geom_point(mapping = aes(x=Month, y=Invoice)) + geom_line(mapping = aes(x=Month, y=Invoice), group=1) +ggtitle("Fig Relay Pte Ltd Repayment Pattern") + scale_x_continuous(limits=c(0,24) ,breaks=1:24)
+
+
+library(ggplot2)
+d0 <- merge(data_tamarillo_B, data_tamarillo_I, by='Month')
+ggplot() + geom_point(data=data_tamarillo_B, aes(x=Month, y=Repayment)) + geom_line(data=data_tamarillo_B,aes(x=Month, y=Repayment, color="red"), group=1)+ geom_point(data=data_tamarillo_I, aes(x=Month, y=Invoice)) + geom_line(data=data_tamarillo_I,aes(x=Month, y=Invoice, colour="blue"), group=1)  + scale_x_continuous(limits=c(0,24) ,breaks=1:24) + scale_colour_discrete(name="Tamarillo Innovation Ptd Ltd", labels=c("Repayment","Invoice")) + ggtitle("Cash collected by months for 2016 & 2017") 
